@@ -4,6 +4,8 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import WorkoutManager from './WorkoutManager';
 import NutritionManager from './NutritionManager';
+import ProgressTracking from './ProgressTracking';
+import NavigationBar from './NavigationBar';
 
 
 const Dashboard = () => {
@@ -39,7 +41,8 @@ const Dashboard = () => {
   });
 
   return (
-    <div className="max-w-md mx-auto mt-8 p-4 bg-white rounded-lg shadow-md">
+    <div className="pt-16 max-w-md mx-auto mt-8 p-4 bg-white rounded-lg shadow-md">
+      <NavigationBar/>
       <h1 className="text-2xl font-bold mb-4">Welcome, {currentUser.name}</h1>
       <div className="mb-4">
         <img src={currentUser.profilePicture} alt="Profile" className="w-24 h-24 rounded-full mx-auto" />
@@ -117,6 +120,8 @@ const Dashboard = () => {
       <WorkoutManager/>
       <h1 className='text-5xl text-center'>Nutrition Manager</h1>
       <NutritionManager/>
+      <h1 className='text-5xl text-center'>Progress Tracking</h1>
+      <ProgressTracking/>
     </div>
   );
 };
