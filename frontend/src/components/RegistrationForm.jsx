@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const RegistrationForm = () => {
-  const [users, setUsers] = useState([]);
+  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
@@ -14,41 +16,28 @@ const RegistrationForm = () => {
       profilePicture: ''
     },
     validationSchema: Yup.object({
-      username: Yup.string()
-        .required('Required'),
-      password: Yup.string()
-        .required('Required'),
-      name: Yup.string()
-        .required('Required'),
-      email: Yup.string()
-        .email('Invalid email address')
-        .required('Required'),
-      profilePicture: Yup.string()
-        .url('Invalid URL')
-        .required('Required')
+      username: Yup.string().required('Required'),
+      password: Yup.string().required('Required'),
+      name: Yup.string().required('Required'),
+      email: Yup.string().email('Invalid email address').required('Required'),
+      profilePicture: Yup.string().url('Invalid URL').required('Required')
     }),
-    onSubmit: values => {
-      const newUser = {
-        username: values.username,
-        password: values.password,
-        name: values.name,
-        email: values.email,
-        profilePicture: values.profilePicture
-      };
+    onSubmit: async (values) => {
+      try {
+        const response = await axios.post(
+          'https://bookish-guacamole-wgj7v9rvqrjf9qrr-5000.app.github.dev/api/auth/register',
+          values
+        );
 
-      setUsers([...users, newUser]);
-      localStorage.setItem('users', JSON.stringify([...users, newUser]));
-
-      // Placeholder for API call
-      // axios.post('/api/register', newUser)
-      //   .then(response => {
-      //     // handle success
-      //   })
-      //   .catch(error => {
-      //     // handle error
-      //   });
-
-      formik.resetForm();
+        if (response.status === 201) {
+          // Handle successful registration
+          formik.resetForm();
+          navigate('/login');
+        }
+      } catch (error) {
+        console.error('There was an error registering the user!', error);
+        alert('Registration failed. Please try again.');
+      }
     }
   });
 
