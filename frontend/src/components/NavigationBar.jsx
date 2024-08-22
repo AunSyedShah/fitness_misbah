@@ -13,7 +13,7 @@ const NavigationBar = () => {
   return (
     <nav className="bg-gray-800 p-4">
       <div className="container mx-auto flex justify-between items-center">
-        <Link to="/" className="text-white text-lg font-bold">AppName</Link>
+        <Link to="/" className="text-white text-lg font-bold">Fitness Tracker</Link>
         <div>
           {currentUser ? (
             <>

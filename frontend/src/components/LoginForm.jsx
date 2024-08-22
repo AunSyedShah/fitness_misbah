@@ -1,4 +1,3 @@
-// LoginForm.jsx
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
@@ -17,17 +16,22 @@ const LoginForm = () => {
       password: Yup.string().required('Required')
     }),
     onSubmit: values => {
-      // Placeholder for authentication logic
+      // Retrieve users from localStorage
       const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
+
+      // Find a user that matches the provided credentials
       const user = storedUsers.find(
         u => u.username === values.username && u.password === values.password
       );
 
       if (user) {
-        // Store user info in localStorage
+        // Store the logged-in user's info in localStorage
         localStorage.setItem('currentUser', JSON.stringify(user));
+
+        // Navigate to the dashboard
         navigate('/dashboard');
       } else {
+        // Show an error if the credentials are invalid
         alert('Invalid username or password');
       }
     }

@@ -2,7 +2,6 @@ import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
 const RegistrationForm = () => {
   const navigate = useNavigate();
@@ -22,18 +21,27 @@ const RegistrationForm = () => {
       email: Yup.string().email('Invalid email address').required('Required'),
       profilePicture: Yup.string().url('Invalid URL').required('Required')
     }),
-    onSubmit: async (values) => {
+    onSubmit: (values) => {
       try {
-        const response = await axios.post(
-          'https://bookish-guacamole-wgj7v9rvqrjf9qrr-5000.app.github.dev/api/auth/register',
-          values
-        );
+        // Retrieve existing users from localStorage
+        const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
 
-        if (response.status === 201) {
-          // Handle successful registration
-          formik.resetForm();
-          navigate('/login');
+        // Check if the user already exists
+        const userExists = storedUsers.some(user => user.username === values.username || user.email === values.email);
+        if (userExists) {
+          alert('User already exists with this username or email.');
+          return;
         }
+
+        // Add new user to the list
+        storedUsers.push(values);
+
+        // Store updated user list in localStorage
+        localStorage.setItem('users', JSON.stringify(storedUsers));
+
+        // Handle successful registration
+        formik.resetForm();
+        navigate('/login');
       } catch (error) {
         console.error('There was an error registering the user!', error);
         alert('Registration failed. Please try again.');
